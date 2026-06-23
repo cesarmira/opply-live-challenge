@@ -26,10 +26,13 @@ POST /suggest   {"ingredient": "butter"}  ->  {"ingredient": "butter", "alternat
    while we are proving the concept. The smoke test is the only verification gate
    (see rule 5). Revisit this once the project moves past POC.
 
-4. **Commit and push to `main` after each successful change.** A change is
-   "successful" once it builds (`make build`) and the smoke test passes. Then
-   commit with a clear message and push to `main`. Small, frequent commits over
-   large ones.
+4. **Commit and push to `main` after every change to any file.** This applies to
+   *every* file in the repo — code, README, docs, scripts, config, this file —
+   not just application code. After making a change, commit it with a clear
+   message and push to `main`. For code changes, a change is "successful" once it
+   builds (`make build`) and the smoke test passes before you commit; non-code
+   changes (docs, README, etc.) can be committed as soon as they are made. Small,
+   frequent commits over large ones — never batch unrelated changes.
 
 5. **Run a smoke test after each push.** After pushing, run `make smoke` to
    verify the running API still answers a known request correctly. If the smoke
