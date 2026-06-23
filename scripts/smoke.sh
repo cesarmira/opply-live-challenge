@@ -33,10 +33,8 @@ for _ in $(seq 1 50); do
   sleep 0.1
 done
 
-echo "==> POST /suggest"
-RESP="$(curl -fsS -X POST "${BASE}/suggest" \
-  -H 'Content-Type: application/json' \
-  -d '{"ingredient":"butter"}')"
+echo "==> GET /suggest?ingredient=butter"
+RESP="$(curl -fsS "${BASE}/suggest?ingredient=butter")"
 echo "    response: ${RESP}"
 
 if ! echo "${RESP}" | grep -q '"alternatives"'; then
@@ -45,9 +43,7 @@ if ! echo "${RESP}" | grep -q '"alternatives"'; then
 fi
 
 echo "==> checking 404 for unknown ingredient"
-CODE="$(curl -s -o /dev/null -w '%{http_code}' -X POST "${BASE}/suggest" \
-  -H 'Content-Type: application/json' \
-  -d '{"ingredient":"unobtanium"}')"
+CODE="$(curl -s -o /dev/null -w '%{http_code}' "${BASE}/suggest?ingredient=unobtanium")"
 if [[ "${CODE}" != "404" ]]; then
   echo "SMOKE FAILED: expected 404 for unknown ingredient, got ${CODE}" >&2
   exit 1
