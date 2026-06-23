@@ -11,6 +11,11 @@ The ingredient is passed as a query parameter; output is JSON.
 GET /suggest?ingredient=butter  ->  {"ingredient": "butter", "alternatives": [...]}
 ```
 
+**Scope:** ingredients are limited to **food and beverages only**. Every
+suggested alternative must belong to the **same category** as the requested
+ingredient — food substitutes for a food, beverage substitutes for a beverage.
+Never mix categories or suggest non-edible items.
+
 ## Rules
 
 1. **Language: Go.** All application code is written in Go using the standard
