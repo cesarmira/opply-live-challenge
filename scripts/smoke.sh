@@ -42,10 +42,18 @@ if ! echo "${RESP}" | grep -q '"alternatives"'; then
   exit 1
 fi
 
-echo "==> checking 404 for unknown ingredient"
-CODE="$(curl -s -o /dev/null -w '%{http_code}' "${BASE}/suggest?ingredient=unobtanium")"
-if [[ "${CODE}" != "404" ]]; then
-  echo "SMOKE FAILED: expected 404 for unknown ingredient, got ${CODE}" >&2
+echo "==> GET /suggest?ingredient=anything (any input returns a suggestion)"
+RESP2="$(curl -fsS "${BASE}/suggest?ingredient=anything")"
+echo "    response: ${RESP2}"
+if ! echo "${RESP2}" | grep -q '"alternatives"'; then
+  echo "SMOKE FAILED: response missing \"alternatives\"" >&2
+  exit 1
+fi
+
+echo "==> checking 400 for missing ingredient"
+CODE="$(curl -s -o /dev/null -w '%{http_code}' "${BASE}/suggest")"
+if [[ "${CODE}" != "400" ]]; then
+  echo "SMOKE FAILED: expected 400 for missing ingredient, got ${CODE}" >&2
   exit 1
 fi
 

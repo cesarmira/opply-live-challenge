@@ -13,7 +13,7 @@ import (
 func main() {
 	addr := ":" + port()
 
-	mux := api.NewMux(suggest.NewStatic())
+	mux := api.NewMux(suggest.NewList())
 
 	log.Printf("ingredient-substitution API listening on %s", addr)
 	if err := http.ListenAndServe(addr, mux); err != nil {
