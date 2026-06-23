@@ -1,6 +1,6 @@
 # ROADMAP
 
-## Today (boilerplate)
+## Today pre-interview (boilerplate)
 
 - [x] Project layout: `cmd/server`, `internal/api`, `internal/suggest`
 - [x] `Suggester` interface + static in-memory stub implementation
@@ -10,6 +10,15 @@
 - [x] Makefile: `build`, `run`, `test`, `smoke`, `fmt`, `tidy`, `clean`
 - [x] Smoke test (`make smoke`) that exercises the live API
 - [x] Working agreement (`AGENTS.md`) and `CLAUDE.md` pointer
+
+## Today live challenge
+
+- [ ] Request a new ingredient to an LLM (https://opencode.ai/)
+- [ ] Deploy application as _probably_ lambda locally
+- [ ] Deploy the application in a pipeline (GitHub CI/CD)
+- [ ] Talk with interviewers about new items in the ROADMAP
+- [ ] Receive/fix feedback
+- [ ] Make a good impression
 
 ## Next
 

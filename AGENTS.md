@@ -5,10 +5,10 @@ Working agreement for any AI agent (and humans) contributing to this project.
 ## What this project is
 
 An HTTP API that suggests **alternative ingredients** for a given ingredient.
-Input is JSON, output is JSON.
+The ingredient is passed as a query parameter; output is JSON.
 
 ```
-POST /suggest   {"ingredient": "butter"}  ->  {"ingredient": "butter", "alternatives": [...]}
+GET /suggest?ingredient=butter  ->  {"ingredient": "butter", "alternatives": [...]}
 ```
 
 ## Rules

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"net/http"
 	"net/http/httptest"
-	"strings"
 	"testing"
 
 	"github.com/cesarmirasanchez/opply-live-challenge/internal/suggest"
@@ -16,7 +15,7 @@ func newTestServer() http.Handler {
 
 func TestSuggest_OK(t *testing.T) {
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/suggest", strings.NewReader(`{"ingredient":"butter"}`))
+	req := httptest.NewRequest(http.MethodGet, "/suggest?ingredient=butter", nil)
 
 	newTestServer().ServeHTTP(rr, req)
 
@@ -35,7 +34,7 @@ func TestSuggest_OK(t *testing.T) {
 
 func TestSuggest_NotFound(t *testing.T) {
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/suggest", strings.NewReader(`{"ingredient":"unobtanium"}`))
+	req := httptest.NewRequest(http.MethodGet, "/suggest?ingredient=unobtanium", nil)
 
 	newTestServer().ServeHTTP(rr, req)
 
@@ -44,20 +43,9 @@ func TestSuggest_NotFound(t *testing.T) {
 	}
 }
 
-func TestSuggest_BadJSON(t *testing.T) {
-	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/suggest", strings.NewReader(`{not json`))
-
-	newTestServer().ServeHTTP(rr, req)
-
-	if rr.Code != http.StatusBadRequest {
-		t.Fatalf("expected 400, got %d", rr.Code)
-	}
-}
-
 func TestSuggest_MissingIngredient(t *testing.T) {
 	rr := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/suggest", strings.NewReader(`{}`))
+	req := httptest.NewRequest(http.MethodGet, "/suggest", nil)
 
 	newTestServer().ServeHTTP(rr, req)
 

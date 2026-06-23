@@ -1,6 +1,6 @@
-// Package api is the HTTP transport layer. It translates JSON requests into
-// calls on a suggest.Suggester and writes JSON responses. It contains no
-// substitution logic of its own.
+// Package api is the HTTP transport layer. It reads the ingredient from the
+// request and writes JSON responses by calling a suggest.Suggester. It contains
+// no substitution logic of its own.
 package api
 
 import (
@@ -11,12 +11,7 @@ import (
 	"github.com/cesarmirasanchez/opply-live-challenge/internal/suggest"
 )
 
-// request is the JSON body accepted by POST /suggest.
-type request struct {
-	Ingredient string `json:"ingredient"`
-}
-
-// response is the JSON body returned by POST /suggest.
+// response is the JSON body returned by GET /suggest.
 type response struct {
 	Ingredient   string                `json:"ingredient"`
 	Alternatives []suggest.Alternative `json:"alternatives"`
@@ -30,7 +25,7 @@ type errorBody struct {
 // NewMux builds the HTTP routes wired to the given Suggester.
 func NewMux(s suggest.Suggester) *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc("POST /suggest", suggestHandler(s))
+	mux.HandleFunc("GET /suggest", suggestHandler(s))
 	mux.HandleFunc("GET /healthz", healthHandler)
 	return mux
 }
@@ -38,19 +33,15 @@ func NewMux(s suggest.Suggester) *http.ServeMux {
 // suggestHandler returns a handler that suggests alternatives for an ingredient.
 func suggestHandler(s suggest.Suggester) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		var req request
-		if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
-			writeError(w, http.StatusBadRequest, "invalid JSON body")
-			return
-		}
-		if req.Ingredient == "" {
-			writeError(w, http.StatusBadRequest, "field \"ingredient\" is required")
+		ingredient := r.URL.Query().Get("ingredient")
+		if ingredient == "" {
+			writeError(w, http.StatusBadRequest, "query parameter \"ingredient\" is required")
 			return
 		}
 
-		alts, err := s.Suggest(req.Ingredient)
+		alts, err := s.Suggest(ingredient)
 		if errors.Is(err, suggest.ErrNotFound) {
-			writeError(w, http.StatusNotFound, "no alternatives found for \""+req.Ingredient+"\"")
+			writeError(w, http.StatusNotFound, "no alternatives found for \""+ingredient+"\"")
 			return
 		}
 		if err != nil {
@@ -58,7 +49,7 @@ func suggestHandler(s suggest.Suggester) http.HandlerFunc {
 			return
 		}
 
-		writeJSON(w, http.StatusOK, response{Ingredient: req.Ingredient, Alternatives: alts})
+		writeJSON(w, http.StatusOK, response{Ingredient: ingredient, Alternatives: alts})
 	}
 }
 
