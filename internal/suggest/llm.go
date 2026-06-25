@@ -20,7 +20,7 @@ type LLM struct {
 // NewLLM returns an LLM wired to the given base URL, API key, and model.
 func NewLLM(baseURL, apiKey, model string) *LLM {
 	return &LLM{
-		baseURL: baseURL,
+		baseURL: strings.TrimRight(baseURL, "/"),
 		apiKey:  apiKey,
 		model:   model,
 		client:  &http.Client{Timeout: 10 * time.Second},
@@ -62,7 +62,7 @@ func (l *LLM) Suggest(ingredient string) ([]Alternative, error) {
 		return nil, fmt.Errorf("marshal request: %w", err)
 	}
 
-	req, err := http.NewRequest(http.MethodPost, l.baseURL+"/v1/chat/completions", bytes.NewReader(body))
+	req, err := http.NewRequest(http.MethodPost, strings.TrimRight(l.baseURL, "/")+"/chat/completions", bytes.NewReader(body))
 	if err != nil {
 		return nil, fmt.Errorf("build request: %w", err)
 	}
