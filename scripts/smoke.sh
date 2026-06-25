@@ -42,11 +42,18 @@ if ! echo "${RESP}" | grep -q '"alternatives"'; then
   exit 1
 fi
 
-echo "==> GET /suggest?ingredient=anything (any input returns a suggestion)"
-RESP2="$(curl -fsS "${BASE}/suggest?ingredient=anything")"
+echo "==> GET /suggest?ingredient=egg"
+RESP2="$(curl -fsS "${BASE}/suggest?ingredient=egg")"
 echo "    response: ${RESP2}"
 if ! echo "${RESP2}" | grep -q '"alternatives"'; then
   echo "SMOKE FAILED: response missing \"alternatives\"" >&2
+  exit 1
+fi
+
+echo "==> GET / (UI)"
+UI="$(curl -fsS "${BASE}/")"
+if ! echo "${UI}" | grep -q "Opply"; then
+  echo "SMOKE FAILED: UI response missing \"Opply\"" >&2
   exit 1
 fi
 

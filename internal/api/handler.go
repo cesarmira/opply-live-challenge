@@ -27,6 +27,7 @@ func NewMux(s suggest.Suggester) *http.ServeMux {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /suggest", suggestHandler(s))
 	mux.HandleFunc("GET /healthz", healthHandler)
+	mux.HandleFunc("GET /", uiHandler)
 	return mux
 }
 

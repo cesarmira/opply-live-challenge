@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ingredient Substitution — Opply</title>
+  <style>
+    :root {
+      --purple:        #7A34FF;
+      --purple-dark:   #5F1FE0;
+      --purple-light:  #F5F0FF;
+      --purple-subtle: #EDE5FF;
+      --dark:   #0F0A1E;
+      --text:   #5B5B7B;
+      --border: #E4E0F0;
+      --bg:     #FAFAFA;
+      --white:  #FFFFFF;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--dark);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
+
+    /* ── Header ─────────────────────────────────────────── */
+    header {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 0 2rem;
+      height: 60px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      flex-shrink: 0;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 800;
+      color: var(--purple);
+      letter-spacing: -0.5px;
+    }
+
+    .badge {
+      font-size: 0.72rem;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      background: var(--purple-light);
+      color: var(--purple);
+      padding: 0.3rem 0.75rem;
+      border-radius: 999px;
+    }
+
+    /* ── Hero ────────────────────────────────────────────── */
+    .hero {
+      background: var(--white);
+      border-bottom: 1px solid var(--border);
+      padding: 4rem 2rem 3.5rem;
+      text-align: center;
+    }
+
+    .hero h1 {
+      font-size: clamp(1.9rem, 4vw, 2.75rem);
+      font-weight: 800;
+      line-height: 1.12;
+      letter-spacing: -0.5px;
+      margin-bottom: 0.75rem;
+    }
+
+    .hero h1 em {
+      font-style: normal;
+      color: var(--purple);
+    }
+
+    .hero p {
+      color: var(--text);
+      font-size: 1.05rem;
+      margin-bottom: 2rem;
+    }
+
+    /* ── Search form ─────────────────────────────────────── */
+    .search-form {
+      display: flex;
+      gap: 0.625rem;
+      max-width: 520px;
+      margin: 0 auto;
+    }
+
+    .search-input {
+      flex: 1;
+      padding: 0.875rem 1.125rem;
+      font-size: 1rem;
+      border: 1.5px solid var(--border);
+      border-radius: 10px;
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+      background: var(--white);
+      color: var(--dark);
+    }
+
+    .search-input::placeholder { color: #B0ACC4; }
+
+    .search-input:focus {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(122, 52, 255, 0.14);
+    }
+
+    .search-btn {
+      padding: 0.875rem 1.5rem;
+      background: var(--purple);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      font-size: 0.95rem;
+      font-weight: 700;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s, transform 0.1s;
+    }
+
+    .search-btn:hover  { background: var(--purple-dark); }
+    .search-btn:active { transform: scale(0.97); }
+    .search-btn:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── Results area ────────────────────────────────────── */
+    .results-area {
+      flex: 1;
+      max-width: 760px;
+      width: 100%;
+      margin: 0 auto;
+      padding: 2.5rem 2rem;
+    }
+
+    .results-label {
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      color: var(--text);
+      margin-bottom: 1.125rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      flex-wrap: wrap;
+    }
+
+    .ingredient-pill {
+      background: var(--purple);
+      color: #fff;
+      padding: 0.2rem 0.75rem;
+      border-radius: 999px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      text-transform: none;
+      letter-spacing: 0;
+    }
+
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(290px, 1fr));
+      gap: 0.875rem;
+    }
+
+    .card {
+      background: var(--white);
+      border: 1.5px solid var(--border);
+      border-radius: 12px;
+      padding: 1.125rem 1.375rem;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    .card:hover {
+      border-color: var(--purple);
+      box-shadow: 0 0 0 3px rgba(122, 52, 255, 0.1);
+    }
+
+    .card-name {
+      font-size: 0.975rem;
+      font-weight: 700;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      margin-bottom: 0.375rem;
+    }
+
+    .card-dot {
+      width: 8px;
+      height: 8px;
+      background: var(--purple);
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .card-notes {
+      font-size: 0.865rem;
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    /* ── State screens ───────────────────────────────────── */
+    .state {
+      text-align: center;
+      padding: 3.5rem 2rem;
+    }
+
+    .state-icon { font-size: 2.25rem; margin-bottom: 0.875rem; }
+
+    .state-title {
+      font-size: 1.05rem;
+      font-weight: 700;
+      margin-bottom: 0.375rem;
+    }
+
+    .state-desc { font-size: 0.875rem; color: var(--text); }
+
+    .state.empty  .state-title { color: var(--text); }
+    .state.error  .state-title { color: #EF4444; }
+
+    .spinner {
+      display: inline-block;
+      width: 26px;
+      height: 26px;
+      border: 3px solid var(--purple-subtle);
+      border-top-color: var(--purple);
+      border-radius: 50%;
+      animation: spin 0.65s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Footer ──────────────────────────────────────────── */
+    footer {
+      text-align: center;
+      padding: 1.5rem 2rem;
+      font-size: 0.78rem;
+      color: var(--text);
+      border-top: 1px solid var(--border);
+      background: var(--white);
+      flex-shrink: 0;
+    }
+
+    footer a { color: var(--purple); text-decoration: none; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+<header>
+  <span class="logo">Opply</span>
+  <span class="badge">Ingredient Substitution</span>
+</header>
+
+<section class="hero">
+  <h1>Find <em>ingredient</em><br>alternatives instantly</h1>
+  <p>Enter any food or beverage ingredient to discover smart substitutes.</p>
+  <form class="search-form" id="searchForm" autocomplete="off">
+    <input
+      id="ingredientInput"
+      class="search-input"
+      type="text"
+      placeholder="e.g. butter, flour, sugar…"
+      autocapitalize="off"
+      spellcheck="false"
+      autofocus
+    />
+    <button type="submit" class="search-btn" id="searchBtn">
+      Find alternatives
+    </button>
+  </form>
+</section>
+
+<div class="results-area" id="resultsArea">
+  <div class="state empty">
+    <div class="state-icon">🥣</div>
+    <div class="state-title">Ready to search</div>
+    <div class="state-desc">Type an ingredient above and hit <strong>Find alternatives</strong>.</div>
+  </div>
+</div>
+
+<footer>
+  Powered by the <a href="/">Ingredient Substitution API</a> &nbsp;&middot;&nbsp; Food &amp; beverage scope only
+</footer>
+
+<script>
+  const form    = document.getElementById('searchForm');
+  const input   = document.getElementById('ingredientInput');
+  const btn     = document.getElementById('searchBtn');
+  const area    = document.getElementById('resultsArea');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const ingredient = input.value.trim();
+    if (!ingredient) { input.focus(); return; }
+
+    btn.disabled = true;
+    renderLoading();
+
+    try {
+      const res  = await fetch('/suggest?ingredient=' + encodeURIComponent(ingredient));
+      const data = await res.json();
+
+      if (!res.ok) {
+        renderError(data.error || 'Something went wrong.');
+      } else {
+        renderResults(ingredient, data.alternatives);
+      }
+    } catch {
+      renderError('Could not reach the API. Is the server running?');
+    } finally {
+      btn.disabled = false;
+    }
+  });
+
+  function renderLoading() {
+    area.innerHTML = `
+      <div class="state">
+        <div class="spinner"></div>
+        <div class="state-desc" style="margin-top:1rem">Looking for alternatives…</div>
+      </div>`;
+  }
+
+  function renderError(msg) {
+    area.innerHTML = `
+      <div class="state error">
+        <div class="state-icon">⚠️</div>
+        <div class="state-title">No results</div>
+        <div class="state-desc">${esc(msg)}</div>
+      </div>`;
+  }
+
+  function renderResults(ingredient, alts) {
+    if (!alts || !alts.length) { renderError(`No alternatives found for "${ingredient}".`); return; }
+
+    const cards = alts.map(a => `
+      <div class="card">
+        <div class="card-name">
+          <span class="card-dot"></span>
+          ${esc(a.name)}
+        </div>
+        ${a.notes ? `<div class="card-notes">${esc(a.notes)}</div>` : ''}
+      </div>`).join('');
+
+    area.innerHTML = `
+      <div class="results-label">
+        ${alts.length} alternative${alts.length !== 1 ? 's' : ''} for
+        <span class="ingredient-pill">${esc(ingredient)}</span>
+      </div>
+      <div class="card-grid">${cards}</div>`;
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;')
+      .replace(/"/g, '&quot;');
+  }
+</script>
+
+</body>
+</html>
