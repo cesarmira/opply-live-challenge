@@ -11,9 +11,17 @@ import (
 )
 
 func main() {
-	addr := ":" + port()
+	apiKey := os.Getenv("OPENCODE_API_KEY")
+	if apiKey == "" {
+		log.Fatal("OPENCODE_API_KEY is required")
+	}
+	baseURL := os.Getenv("OPENCODE_BASE_URL")
+	if baseURL == "" {
+		log.Fatal("OPENCODE_BASE_URL is required")
+	}
 
-	mux := api.NewMux(suggest.NewList())
+	addr := ":" + port()
+	mux := api.NewMux(suggest.NewLLM(baseURL, apiKey, "deepseek-v4-flash"))
 
 	log.Printf("ingredient-substitution API listening on %s", addr)
 	if err := http.ListenAndServe(addr, mux); err != nil {
