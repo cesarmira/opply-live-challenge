@@ -33,6 +33,14 @@ fmt: ## Format all Go code
 tidy: ## Tidy go.mod / go.sum
 	go mod tidy
 
+.PHONY: build-lambda
+build-lambda: ## Build Linux/amd64 binary and zip for Lambda deployment
+	./scripts/build-lambda.sh
+
+.PHONY: deploy
+deploy: build-lambda ## Build and deploy to AWS Lambda via Terraform
+	cd terraform && terraform apply
+
 .PHONY: clean
 clean: ## Remove build artifacts
-	rm -rf bin
+	rm -rf bin dist
