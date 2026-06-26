@@ -23,7 +23,7 @@ func NewLLM(baseURL, apiKey, model string) *LLM {
 		baseURL: strings.TrimRight(baseURL, "/"),
 		apiKey:  apiKey,
 		model:   model,
-		client:  &http.Client{Timeout: 10 * time.Second},
+		client:  &http.Client{Timeout: 25 * time.Second},
 	}
 }
 

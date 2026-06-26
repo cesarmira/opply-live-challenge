@@ -28,7 +28,7 @@
 - [ ] Structured logging and request IDs
 - [ ] Configurable via environment / flags (port, log level)
 - [ ] Containerize (Dockerfile) and add CI running `make test` + `make smoke`
-
+    
 ## Future
 
 - [ ] Swap the static stub for a real data backend (database)
